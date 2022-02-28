@@ -21,4 +21,4 @@ jobs:
       # Rust is automatically set up and included by default according to: https://github.com/actions/starter-workflows/blob/master/ci/rust.yml
       # Run cargo fmt linting on the source code
       - name: Run style linter
-        run: cd ../cli && cargo fmt -- --check
+        run: cargo fmt -- --check
