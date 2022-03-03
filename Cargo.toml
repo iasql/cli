@@ -1,6 +1,6 @@
 [package]
 name = "iasql"
-description = "Infrastructure as SQL"
+description = "Infrastructure as a SQL DB"
 homepage = "https://iasql.com"
 version = "0.2.3"
 edition = "2018"
