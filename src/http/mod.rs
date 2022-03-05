@@ -28,6 +28,8 @@ impl HttpError {
 pub static CLIENT: Lazy<Client<HttpsConnector<HttpConnector>>> =
   Lazy::new(|| Client::builder().build::<_, Body>(HttpsConnector::new()));
 
+pub const VERSION: &'static str = env!("CARGO_PKG_VERSION");
+
 fn get_url() -> &'static str {
   let default = if cfg!(debug_assertions) {
     "local"
@@ -67,6 +69,7 @@ pub async fn request(req: Request<Body>) -> Result<String, HttpError> {
 pub async fn get_v1(endpoint: &str) -> Result<String, HttpError> {
   let req = Request::get(format!("{}/v1/{}", get_url(), endpoint))
     .header("Authorization", format!("Bearer {}", get_token()))
+    .header("cli-version", VERSION)
     .body(Body::empty());
   let req = match req {
     Ok(r) => r,
@@ -79,6 +82,7 @@ pub async fn post_v1(endpoint: &str, body: Value) -> Result<String, HttpError> {
   let req = Request::post(format!("{}/v1/{}", get_url(), endpoint))
     .header("Content-Type", "application/json")
     .header("Authorization", format!("Bearer {}", get_token()))
+    .header("cli-version", VERSION)
     .body(body.to_string().into());
   let req = match req {
     Ok(req) => req,
