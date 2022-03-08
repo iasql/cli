@@ -2,7 +2,7 @@
 name = "iasql"
 description = "Infrastructure as a SQL DB"
 homepage = "https://iasql.com"
-version = "0.2.3"
+version = "0.2.4"
 edition = "2018"
 
 [dependencies]
