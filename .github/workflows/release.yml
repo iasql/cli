@@ -52,7 +52,7 @@ jobs:
     - name: Upload IaSQL zip
       uses: softprops/action-gh-release@v1
       with:
-        files: D:\a\iasql\cli\iasql-windows.zip
+        files: D:\a\cli\cli\iasql-windows.zip
 
   macos:
     runs-on: macos-latest
