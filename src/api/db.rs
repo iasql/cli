@@ -486,7 +486,11 @@ fn provide_aws_region(noninteractive: bool) -> String {
   }
   let regions = &get_aws_regions();
   let default = regions.iter().position(|s| s == "us-east-2").unwrap_or(0);
-  let selection = dlg::select_with_default("Pick AWS region to manage with a hosted db", regions, default);
+  let selection = dlg::select_with_default(
+    "Pick AWS region to manage with a hosted db",
+    regions,
+    default,
+  );
   regions[selection].clone()
 }
 
