@@ -158,7 +158,7 @@ pub fn get_or_input_arg(arg_opt: Option<&str>, in_title: &str) -> String {
   }
 }
 
-pub async fn get_dbs(exit_if_none: bool) -> Vec<String> {
+async fn get_dbs(exit_if_none: bool) -> Vec<String> {
   let resp = get_v1("db/list").await;
   let res = match &resp {
     Ok(r) => r,
