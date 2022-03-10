@@ -92,19 +92,11 @@ pub async fn main() {
     ("new", Some(s_matches)) => {
       let noninteractive = s_matches.is_present("noninteractive");
       auth::login(false, noninteractive).await;
-      let db = db::get_or_input_db(s_matches.value_of("db")).await;
-      db::new(&db, noninteractive).await;
+      let db_name = db::new(s_matches.value_of("db"), noninteractive).await;
       if !noninteractive {
-        let modules = module::mods_to_install(&db, None).await;
-        module::install(&db, modules, noninteractive).await;
+        let modules = module::mods_to_install(&db_name, None).await;
+        module::install(&db_name, modules, noninteractive).await;
       }
-    }
-    ("import", Some(s_matches)) => {
-      let noninteractive = s_matches.is_present("noninteractive");
-      auth::login(false, noninteractive).await;
-      let db = db::get_or_input_db(s_matches.value_of("db")).await;
-      let dump_file = db::get_or_input_arg(s_matches.value_of("dump_file"), "Dump file");
-      db::import(&db, &dump_file, noninteractive).await;
     }
     ("export", Some(s_matches)) => {
       let noninteractive = s_matches.is_present("noninteractive");
