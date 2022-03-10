@@ -38,7 +38,7 @@ pub async fn main() {
         .arg(Arg::from_usage("--noninteractive")),
       SubCommand::with_name("apply")
         .display_order(4)
-        .about("Create, delete or update the resources in a hosted db")
+        .about("Create, delete or update the cloud resources in a hosted db")
         .arg(Arg::from_usage("[db]"))
         .arg(Arg::from_usage("--noninteractive")),
       SubCommand::with_name("plan")

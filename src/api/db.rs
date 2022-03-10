@@ -178,7 +178,7 @@ pub async fn get_dbs(exit_if_none: bool) -> Vec<String> {
     println!(
       "{} {}",
       dlg::warn_prefix(),
-      dlg::bold("No hosted dbs to manage cloud accounts have been created")
+      dlg::bold("No hosted db to manage a cloud account has been created")
     );
     exit(0);
   }
@@ -317,7 +317,7 @@ fn maybe_planned_nothing(plan_response: &PlanResponse) {
     && plan_response.toDelete.keys().len() == 0
   {
     println!(
-      "{} No difference detected between db and your cloud account",
+      "{} No difference detected between hosted db and cloud account",
       dlg::warn_prefix(),
     );
   }
@@ -584,7 +584,7 @@ pub async fn new(db: &str, noninteractive: bool) {
   let (access_key, secret) = provide_aws_creds(noninteractive);
   let sp = ProgressBar::new_spinner();
   sp.enable_steady_tick(10);
-  sp.set_message("Provising a hosted db to manage your cloud account");
+  sp.set_message("Provisioning a hosted db to manage this cloud account");
   let body = json!({
     "dbAlias": db,
     "awsRegion": region,
