@@ -16,54 +16,66 @@ pub async fn main() {
     .setting(AppSettings::SubcommandRequiredElseHelp)
     .subcommands(vec![
       SubCommand::with_name("login")
-        .about("Obtain and save credentials for the IaSQL service")
+        .display_order(11)
+        .about("Obtain and save credentials for hosted IaSQL engine")
         .arg(Arg::from_usage("--noninteractive")),
       SubCommand::with_name("new")
-        .about("Create a db to manage cloud resources")
+        .display_order(1)
+        .about("Connect a hosted db to a cloud account")
         .arg(Arg::from_usage("[db]"))
         .arg(Arg::from_usage("--noninteractive")),
       SubCommand::with_name("export")
-        .about("Export a db dump to backup your infrastructure or import it into another db")
+        .display_order(10)
+        .about("Dump a hosted db to backup the infrastructure in the connect account")
         .arg(Arg::from_usage("[db]"))
         .arg(Arg::from_usage("[dump_file]"))
         .arg(Arg::from_usage("--noninteractive")),
       SubCommand::with_name("remove")
-        .about("Remove a db and stop managing the cloud resources within it")
+        .display_order(2)
+        .about("Remove a hosted db to stop managing the connected cloud account")
         .visible_alias("rm")
         .arg(Arg::from_usage("[db]"))
         .arg(Arg::from_usage("--noninteractive")),
       SubCommand::with_name("apply")
-        .about("Create, delete or update the resources in a db")
+        .display_order(4)
+        .about("Create, delete or update the cloud resources in a hosted db")
         .arg(Arg::from_usage("[db]"))
         .arg(Arg::from_usage("--noninteractive")),
       SubCommand::with_name("plan")
+        .display_order(5)
         .about("Display a preview of the resources in a db to be modified on the next `apply`")
         .arg(Arg::from_usage("[db]"))
         .arg(Arg::from_usage("--noninteractive")),
       SubCommand::with_name("sync")
-        .about("Synchronize db with the current state of the cloud")
+        .display_order(6)
+        .about("Synchronize a hosted db with the current state of the cloud account")
         .arg(Arg::from_usage("[db]"))
         .arg(Arg::from_usage("--noninteractive")),
       SubCommand::with_name("install")
-        .about("Install mods in a given db")
+        .display_order(7)
+        .about("Install mods in a given hosted db")
         .arg(Arg::from_usage("--db=[DB]"))
         .arg(Arg::with_name("modules").min_values(1))
         .arg(Arg::from_usage("--noninteractive")),
       SubCommand::with_name("uninstall")
-        .about("Uninstall mods from a given db")
+        .display_order(8)
+        .about("Uninstall mods from a given hosted db")
         .arg(Arg::from_usage("--db=[DB]"))
         .arg(Arg::with_name("modules").min_values(1))
         .arg(Arg::from_usage("--noninteractive")),
       SubCommand::with_name("logout")
-        .about("Remove locally-stored credentials for the IaSQL service")
+        .display_order(12)
+        .about("Remove locally-stored credentials for the hosted IaSQL engine")
         .arg(Arg::from_usage("--noninteractive")),
       SubCommand::with_name("dbs")
+        .display_order(3)
         .alias("databases")
-        .about("List all dbs")
+        .about("List all hosted dbs")
         .arg(Arg::from_usage("--noninteractive")),
       SubCommand::with_name("mods")
+        .display_order(9)
         .alias("modules")
-        .about("List all modules or list the modules installed in a given database")
+        .about("List all modules or list the modules installed in a given hosted db")
         .arg(Arg::from_usage("[db]"))
         .arg(Arg::from_usage("--noninteractive")),
     ]);
@@ -80,19 +92,11 @@ pub async fn main() {
     ("new", Some(s_matches)) => {
       let noninteractive = s_matches.is_present("noninteractive");
       auth::login(false, noninteractive).await;
-      let db = db::get_or_input_db(s_matches.value_of("db")).await;
-      db::new(&db, noninteractive).await;
+      let db_name = db::new(s_matches.value_of("db"), noninteractive).await;
       if !noninteractive {
-        let modules = module::mods_to_install(&db, None).await;
-        module::install(&db, modules, noninteractive).await;
+        let modules = module::mods_to_install(&db_name, None).await;
+        module::install(&db_name, modules, noninteractive).await;
       }
-    }
-    ("import", Some(s_matches)) => {
-      let noninteractive = s_matches.is_present("noninteractive");
-      auth::login(false, noninteractive).await;
-      let db = db::get_or_input_db(s_matches.value_of("db")).await;
-      let dump_file = db::get_or_input_arg(s_matches.value_of("dump_file"), "Dump file");
-      db::import(&db, &dump_file, noninteractive).await;
     }
     ("export", Some(s_matches)) => {
       let noninteractive = s_matches.is_present("noninteractive");
