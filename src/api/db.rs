@@ -607,9 +607,19 @@ pub async fn new(db_opt: Option<&str>, noninteractive: bool) -> String {
       let db_metadata: NewDbResponse = serde_json::from_str(res).unwrap();
       let alias = db_metadata.alias.clone();
       if db == alias {
-        println!("{} {}", dlg::success_prefix(), dlg::bold("Done provisioning hosted db"));
+        println!(
+          "{} {}",
+          dlg::success_prefix(),
+          dlg::bold("Done provisioning hosted db")
+        );
       } else {
-        println!("{} {} {} {}", dlg::success_prefix(), dlg::bold("Done provisioning hosted db"), dlg::divider(), dlg::green(&alias));
+        println!(
+          "{} {} {} {}",
+          dlg::success_prefix(),
+          dlg::bold("Done provisioning hosted db"),
+          dlg::divider(),
+          dlg::green(&alias)
+        );
       }
       display_new_db(db_metadata);
       alias
