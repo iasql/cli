@@ -486,11 +486,7 @@ fn provide_aws_region(noninteractive: bool) -> String {
   }
   let regions = &get_aws_regions();
   let default = regions.iter().position(|s| s == "us-east-2").unwrap_or(0);
-  let selection = dlg::select_with_default(
-    "Pick AWS region to manage",
-    regions,
-    default,
-  );
+  let selection = dlg::select_with_default("Pick AWS region to manage", regions, default);
   regions[selection].clone()
 }
 
@@ -510,7 +506,11 @@ fn provide_aws_creds(noninteractive: bool) -> (String, String) {
     let all_creds = aws_cli_creds.unwrap();
     let profiles: Vec<String> = all_creds.keys().cloned().collect();
     let selection = if profiles.len() > 1 {
-      dlg::select_with_default("AWS CLI credentials found. Pick named profile", &profiles, 0)
+      dlg::select_with_default(
+        "AWS CLI credentials found. Pick named profile",
+        &profiles,
+        0,
+      )
     } else {
       println!(
         "{} {}",
@@ -584,7 +584,10 @@ fn display_new_db(db_metadata: NewDbResponse) {
 }
 
 pub async fn new(db_opt: Option<&str>, noninteractive: bool) -> String {
-  println!("{}", dlg::bold("Manage a cloud account with a hosted IaSQL DB...\n"));
+  println!(
+    "{}",
+    dlg::bold("Manage a cloud account with a hosted IaSQL DB...\n")
+  );
   let (access_key, secret) = provide_aws_creds(noninteractive);
   let region = provide_aws_region(noninteractive);
   let db = get_or_input_db(db_opt).await;
