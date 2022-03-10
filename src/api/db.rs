@@ -100,7 +100,7 @@ pub async fn get_or_select_db(db_opt: Option<&str>) -> String {
   let dbs = get_dbs(true).await;
   if db_opt.is_none() {
     let selection = if dbs.len() > 1 {
-      dlg::select_with_default("Pick IaSQL db", &dbs, 0)
+      dlg::select_with_default("Pick hosted IaSQL db", &dbs, 0)
     } else {
       // if only one db, skip selection
       println!(
@@ -120,7 +120,7 @@ pub async fn get_or_select_db(db_opt: Option<&str>) -> String {
       eprintln!(
         "{} {} {} {}",
         dlg::err_prefix(),
-        dlg::bold("Nonexistent db"),
+        dlg::bold("Nonexistent hosted db"),
         dlg::divider(),
         dlg::red(db)
       );
@@ -141,7 +141,7 @@ pub async fn get_or_input_db(db_opt: Option<&str>) -> String {
     eprintln!(
       "{} {} {} {}",
       dlg::err_prefix(),
-      dlg::bold("Name already in use by another db"),
+      dlg::bold("Name already in use by another hosted db"),
       dlg::divider(),
       dlg::red(&db)
     );
@@ -158,7 +158,7 @@ pub fn get_or_input_arg(arg_opt: Option<&str>, in_title: &str) -> String {
   }
 }
 
-async fn get_dbs(exit_if_none: bool) -> Vec<String> {
+pub async fn get_dbs(exit_if_none: bool) -> Vec<String> {
   let resp = get_v1("db/list").await;
   let res = match &resp {
     Ok(r) => r,
@@ -166,7 +166,7 @@ async fn get_dbs(exit_if_none: bool) -> Vec<String> {
       eprintln!(
         "{} {} {} {}",
         dlg::err_prefix(),
-        dlg::bold("Failed to get all dbs"),
+        dlg::bold("Failed to get all hosted dbs"),
         dlg::divider(),
         e.message
       );
@@ -178,7 +178,7 @@ async fn get_dbs(exit_if_none: bool) -> Vec<String> {
     println!(
       "{} {}",
       dlg::warn_prefix(),
-      dlg::bold("No dbs to manage cloud resources have been created")
+      dlg::bold("No hosted dbs to manage cloud accounts have been created")
     );
     exit(0);
   }
@@ -208,7 +208,7 @@ pub async fn export(db: &str, dump_file: String) {
           eprintln!(
             "{} {} {} {} {} {}",
             dlg::err_prefix(),
-            dlg::bold("Failed to export db"),
+            dlg::bold("Failed to export hosted db"),
             dlg::divider(),
             dlg::red(db),
             dlg::divider(),
@@ -222,7 +222,7 @@ pub async fn export(db: &str, dump_file: String) {
       eprintln!(
         "{} {} {} {} {} {}",
         dlg::err_prefix(),
-        dlg::bold("Failed to export db"),
+        dlg::bold("Failed to export hosted db"),
         dlg::divider(),
         dlg::red(db),
         dlg::divider(),
@@ -238,7 +238,7 @@ pub async fn list() {
   let mut table = AsciiTable::default();
   table.max_width = 140;
   let column = Column {
-    header: "Database Name".into(),
+    header: "Hosted Database Name".into(),
     ..Column::default()
   };
   table.columns.insert(0, column);
@@ -317,7 +317,7 @@ fn maybe_planned_nothing(plan_response: &PlanResponse) {
     && plan_response.toDelete.keys().len() == 0
   {
     println!(
-      "{} No difference detected between db and your cloud settings",
+      "{} No difference detected between db and your cloud account",
       dlg::warn_prefix(),
     );
   }
@@ -486,7 +486,7 @@ fn provide_aws_region(noninteractive: bool) -> String {
   }
   let regions = &get_aws_regions();
   let default = regions.iter().position(|s| s == "us-east-2").unwrap_or(0);
-  let selection = dlg::select_with_default("Pick AWS region", regions, default);
+  let selection = dlg::select_with_default("Pick AWS region to manage with a hosted db", regions, default);
   regions[selection].clone()
 }
 
@@ -502,16 +502,16 @@ fn provide_aws_creds(noninteractive: bool) -> (String, String) {
     std::process::exit(1);
   }
   let aws_cli_creds = get_aws_cli_creds();
-  if aws_cli_creds.is_ok()
-    && dlg::confirm_with_default(
-      "Default AWS CLI credentials found. Do you wish to use those?",
-      true,
-    )
-  {
+  if aws_cli_creds.is_ok() {
+    println!(
+      "{} {}",
+      dlg::success_prefix(),
+      dlg::bold("Default AWS CLI credentials found"),
+    );
     let all_creds = aws_cli_creds.unwrap();
     let profiles: Vec<String> = all_creds.keys().cloned().collect();
     let selection = if profiles.len() > 1 {
-      dlg::select_with_default("Pick AWS Profile", &profiles, 0)
+      dlg::select_with_default("Pick AWS Profile to manage with a hosted db", &profiles, 0)
     } else {
       0
     };
@@ -584,7 +584,7 @@ pub async fn new(db: &str, noninteractive: bool) {
   let (access_key, secret) = provide_aws_creds(noninteractive);
   let sp = ProgressBar::new_spinner();
   sp.enable_steady_tick(10);
-  sp.set_message("Creating a db to manage your cloud settings");
+  sp.set_message("Provising a hosted db to manage your cloud account");
   let body = json!({
     "dbAlias": db,
     "awsRegion": region,
