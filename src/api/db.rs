@@ -132,7 +132,7 @@ pub async fn get_or_select_db(db_opt: Option<&str>) -> String {
 
 async fn get_or_input_db(db_opt: Option<&str>) -> String {
   let db = if db_opt.is_none() {
-    dlg::input("Name for hosted IaSQL db")
+    dlg::optional_input("Optional db name")
   } else {
     db_opt.unwrap().to_string()
   };
@@ -604,9 +604,15 @@ pub async fn new(db_opt: Option<&str>, noninteractive: bool) -> String {
   sp.finish_and_clear();
   match &resp {
     Ok(res) => {
-      println!("{} {}", dlg::success_prefix(), dlg::bold("Done"));
       let db_metadata: NewDbResponse = serde_json::from_str(res).unwrap();
+      let alias = db_metadata.alias.clone();
+      if db == alias {
+        println!("{} {}", dlg::success_prefix(), dlg::bold("Done provisioning hosted db"));
+      } else {
+        println!("{} {} {} {}", dlg::success_prefix(), dlg::bold("Done provisioning hosted db"), dlg::divider(), dlg::green(&alias));
+      }
       display_new_db(db_metadata);
+      alias
     }
     Err(e) => {
       eprintln!(
@@ -620,8 +626,7 @@ pub async fn new(db_opt: Option<&str>, noninteractive: bool) -> String {
       );
       exit(1);
     }
-  };
-  db
+  }
 }
 
 fn str_from_file(file: &str) -> Result<String, Box<dyn Error>> {
