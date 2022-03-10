@@ -75,19 +75,6 @@ pub fn select_with_default(prompt: &str, items: &Vec<String>, default: usize) ->
     .unwrap()
 }
 
-pub fn input_with_default_and_validation(
-  prompt: &str,
-  default: String,
-  validator: impl Validator<String>,
-) -> String {
-  Input::with_theme(&ColorfulTheme::default())
-    .with_prompt(prompt)
-    .validate_with(validator)
-    .default(default)
-    .interact_text()
-    .unwrap()
-}
-
 pub fn input_with_validation(prompt: &str, validator: impl Validator<String>) -> String {
   Input::with_theme(&ColorfulTheme::default())
     .with_prompt(prompt)
@@ -111,28 +98,10 @@ pub fn input(prompt: &str) -> String {
     .unwrap()
 }
 
-pub fn input_with_initial_text(prompt: &str, initial_text: String) -> String {
+pub fn optional_input(prompt: &str) -> String {
   Input::with_theme(&ColorfulTheme::default())
     .with_prompt(prompt)
-    .with_initial_text(initial_text)
+    .allow_empty(true)
     .interact_text()
     .unwrap()
-}
-
-pub fn input_with_default(prompt: &str, default: String) -> String {
-  Input::with_theme(&ColorfulTheme::default())
-    .with_prompt(prompt)
-    .default(default)
-    .interact_text()
-    .unwrap()
-}
-
-pub fn input_with_allow_empty_as_result(
-  prompt: &str,
-  allow_empty: bool,
-) -> std::io::Result<String> {
-  Input::with_theme(&ColorfulTheme::default())
-    .with_prompt(prompt)
-    .allow_empty(allow_empty)
-    .interact_text()
 }
