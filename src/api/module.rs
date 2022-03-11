@@ -201,7 +201,6 @@ pub async fn mods_to_install(db: &str, mods_opt: Option<Vec<String>>) -> Vec<Str
       .iter()
       .map(|m| m[..m.find("@").unwrap()].to_string())
       .collect();
-    println!("{}", dlg::bold("Install the latest module(s)..."));
     let idxs = dlg::multiselect(
       "Use ⬆  ⬇  to move, SPACE to (de)select modules and ENTER to submit",
       &available_display,
