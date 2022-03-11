@@ -9,7 +9,6 @@ extern crate iasql;
 
 #[tokio::main]
 pub async fn main() {
-  // TODO add non-interactive mode support via parameters
   let app = App::new(crate_name!())
     .version(crate_version!())
     .about(crate_description!())
@@ -19,7 +18,8 @@ pub async fn main() {
         .display_order(11)
         .about("Obtain and save credentials for hosted IaSQL engine")
         .arg(Arg::from_usage("--noninteractive")),
-      SubCommand::with_name("new")
+      SubCommand::with_name("connect")
+        .alias("new")
         .display_order(1)
         .about("Connect a hosted db to a cloud account")
         .arg(Arg::from_usage("[db]"))
@@ -31,10 +31,11 @@ pub async fn main() {
         .arg(Arg::from_usage("[dump_file]"))
         .arg(Arg::from_usage("--data-only"))
         .arg(Arg::from_usage("--noninteractive")),
-      SubCommand::with_name("remove")
+      SubCommand::with_name("disconnect")
+        .alias("remove")
+        .alias("rm")
         .display_order(2)
-        .about("Remove a hosted db to stop managing the connected cloud account")
-        .visible_alias("rm")
+        .about("Disconnect a hosted db from its cloud account")
         .arg(Arg::from_usage("[db]"))
         .arg(Arg::from_usage("--noninteractive")),
       SubCommand::with_name("apply")
@@ -71,7 +72,7 @@ pub async fn main() {
       SubCommand::with_name("dbs")
         .display_order(3)
         .alias("databases")
-        .about("List all hosted dbs")
+        .about("List all hosted dbs connected to a cloud account")
         .arg(Arg::from_usage("--noninteractive")),
       SubCommand::with_name("mods")
         .display_order(9)
@@ -90,7 +91,7 @@ pub async fn main() {
       let noninteractive = s_matches.is_present("noninteractive");
       auth::logout(noninteractive);
     }
-    ("new", Some(s_matches)) => {
+    ("connect", Some(s_matches)) => {
       let noninteractive = s_matches.is_present("noninteractive");
       auth::login(false, noninteractive).await;
       let db_name = db::new(s_matches.value_of("db"), noninteractive).await;
@@ -107,7 +108,7 @@ pub async fn main() {
       let dump_file = db::get_or_input_arg(s_matches.value_of("dump_file"), "Dump file");
       db::export(&db, dump_file, data_only).await;
     }
-    ("remove", Some(s_matches)) => {
+    ("disconnect", Some(s_matches)) => {
       let noninteractive = s_matches.is_present("noninteractive");
       auth::login(false, noninteractive).await;
       let db = db::get_or_select_db(s_matches.value_of("db")).await;

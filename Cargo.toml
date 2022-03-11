@@ -1,6 +1,6 @@
 [package]
 name = "iasql"
-description = "Manage cloud infrastructure via a hosted PostgreSQL DB"
+description = "Manage cloud infrastructure using a hosted PostgreSQL DB"
 homepage = "https://iasql.com"
 version = "0.2.5"
 edition = "2018"
