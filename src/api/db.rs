@@ -587,7 +587,7 @@ fn display_new_db(db_metadata: NewDbResponse) {
 pub async fn new(db_opt: Option<&str>, noninteractive: bool) -> String {
   println!(
     "{}",
-    dlg::bold("Manage a cloud account with a hosted IaSQL DB...\n")
+    dlg::bold("Connect a cloud account to a hosted IaSQL DB...\n")
   );
   let (access_key, secret) = provide_aws_creds(noninteractive);
   let region = provide_aws_region(noninteractive);
