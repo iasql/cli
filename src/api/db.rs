@@ -185,7 +185,7 @@ async fn get_dbs(exit_if_none: bool) -> Vec<String> {
   dbs
 }
 
-pub async fn export(db: &str, dump_file: String) {
+pub async fn export(db: &str, dump_file: String, data_only: bool) {
   let sp = ProgressBar::new_spinner();
   sp.enable_steady_tick(10);
   sp.set_message("Export in progress");
@@ -196,6 +196,7 @@ pub async fn export(db: &str, dump_file: String) {
   };
   let body = json!({
     "dbAlias": db,
+    "dataOnly": data_only,
   });
   let resp = post_v1("db/export/", body).await;
   sp.finish_and_clear();

@@ -29,6 +29,7 @@ pub async fn main() {
         .about("Dump a hosted db to backup the infrastructure in the connect account")
         .arg(Arg::from_usage("[db]"))
         .arg(Arg::from_usage("[dump_file]"))
+        .arg(Arg::from_usage("--data-only"))
         .arg(Arg::from_usage("--noninteractive")),
       SubCommand::with_name("remove")
         .display_order(2)
@@ -100,10 +101,11 @@ pub async fn main() {
     }
     ("export", Some(s_matches)) => {
       let noninteractive = s_matches.is_present("noninteractive");
+      let data_only = s_matches.is_present("data-only");
       auth::login(false, noninteractive).await;
       let db = db::get_or_select_db(s_matches.value_of("db")).await;
       let dump_file = db::get_or_input_arg(s_matches.value_of("dump_file"), "Dump file");
-      db::export(&db, dump_file).await;
+      db::export(&db, dump_file, data_only).await;
     }
     ("remove", Some(s_matches)) => {
       let noninteractive = s_matches.is_present("noninteractive");
