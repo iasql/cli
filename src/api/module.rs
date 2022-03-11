@@ -195,10 +195,16 @@ pub async fn mods_to_install(db: &str, mods_opt: Option<Vec<String>>) -> Vec<Str
     exit(0);
   };
   let mut mods = if mods_opt.is_none() {
-    let available = all.into_iter().filter(|x| !installed.contains(x)).collect();
+    let available: Vec<String> = all.into_iter().filter(|x| !installed.contains(x)).collect();
+    // always install the latest version
+    let available_display: Vec<String> = available.iter().map(|m| m[..m.find("@").unwrap()].to_string()).collect();
+    println!(
+      "{}",
+      dlg::bold("Install the latest module(s)...")
+    );
     let idxs = dlg::multiselect(
-      "Use arrows to move, space to (de)select modules and enter to submit",
-      &available,
+      "Use ⬆  ⬇  to move, SPACE to (de)select modules and ENTER to submit",
+      &available_display,
     );
     if idxs.len() == 0 {
       println!(

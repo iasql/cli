@@ -94,6 +94,7 @@ pub async fn main() {
       auth::login(false, noninteractive).await;
       let db_name = db::new(s_matches.value_of("db"), noninteractive).await;
       if !noninteractive {
+        println!("\n");
         let modules = module::mods_to_install(&db_name, None).await;
         module::install(&db_name, modules, noninteractive).await;
       }
