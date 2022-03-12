@@ -82,10 +82,12 @@ jobs:
       - windows
 
     steps:
+    - run: |
+        echo "NICE_VERSION=v${{ env.VERSION }}" >> $GITHUB_ENV
     - name: Emit repository_dispatch
       uses: peter-evans/repository-dispatch@v1
       with:
         token: ${{ secrets.GH_PAT }}
         repository: iasql/docs
         event-type: release
-        client-payload: '{"version": "v${{ env.VERSION }}"}'
+        client-payload: '{"version": "${{ env.NICE_VERSION }}"}'
