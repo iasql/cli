@@ -90,9 +90,9 @@ jobs:
 
     steps:
     - name: Emit repository_dispatch
-        uses: peter-evans/repository-dispatch@v1
-        with:
-          token: ${{ secrets.GH_PAT }}
-          repository: iasql/docs
-          event-type: release
-          client-payload: '{"version": "${{ steps.get_version.outputs.VERSION }}"}'
+      uses: peter-evans/repository-dispatch@v1
+      with:
+        token: ${{ secrets.GH_PAT }}
+        repository: iasql/docs
+        event-type: release
+        client-payload: '{"version": "${{ steps.get_version.outputs.VERSION }}"}'
