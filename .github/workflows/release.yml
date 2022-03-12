@@ -6,18 +6,12 @@ on:
     tags:
       - 'v*' # Push events to matching v*, i.e. v1.0, v20.15.10
 
-jobs:
-  get-version:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Get the version
-        id: get_version
-        run: echo ::set-output name=VERSION::${github.ref/refs\/tags\//}
+env:
+  VERSION: $(echo ${{github.ref}} | sed "s/refs\/tags\/v//")
 
+jobs:
   ubuntu:
     runs-on: ubuntu-latest
-    needs:
-      - get-version
 
     steps:
     # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
@@ -38,7 +32,7 @@ jobs:
       run: |
         sudo apt install checkinstall -y
         echo "Infrastructure as SQL (IaSQL) CLI client" | sudo checkinstall --install=no -D --pkgname=iasql --pkgversion=${iasqlversion} --pkglicense=Proprietary --maintainer=hello@iasql.com --pkggroup="IaSQL" --nodoc --deldesc=yes --delspec=yes --backup=no
-        cp ./iasql_${{ steps.get_version.outputs.VERSION }}-1_amd64.deb /tmp/iasql_ubuntu_amd64.deb
+        cp ./iasql_${{ env.VERSION }}-1_amd64.deb /tmp/iasql_ubuntu_amd64.deb
 
     - name: Upload IaSQL Debian package
       uses: softprops/action-gh-release@v1
@@ -95,4 +89,4 @@ jobs:
         token: ${{ secrets.GH_PAT }}
         repository: iasql/docs
         event-type: release
-        client-payload: '{"version": "${{ steps.get_version.outputs.VERSION }}"}'
+        client-payload: '{"version": "${{ env.VERSION }}"}'
