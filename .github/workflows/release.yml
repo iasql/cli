@@ -1,16 +1,20 @@
+name: Release CLI
+
 on:
   push:
     # Sequence of patterns matched against refs/tags
     tags:
       - 'v*' # Push events to matching v*, i.e. v1.0, v20.15.10
-
-name: Release CLI
+  # Allows you to run this workflow manually from the Actions tab
+  workflow_dispatch:
 
 jobs:
   get-version:
-    - name: Get the version
-      id: get_version
-      run: echo ::set-output name=VERSION::${github.ref/refs\/tags\//}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Get the version
+        id: get_version
+        run: echo ::set-output name=VERSION::${github.ref/refs\/tags\//}
 
   ubuntu:
     runs-on: ubuntu-latest
