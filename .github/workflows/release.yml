@@ -31,7 +31,7 @@ jobs:
     - name: Generate IaSQL Debian package
       run: |
         sudo apt install checkinstall -y
-        echo "Infrastructure as SQL (IaSQL) CLI client" | sudo checkinstall --install=no -D --pkgname=iasql --pkgversion=${iasqlversion} --pkglicense=Proprietary --maintainer=hello@iasql.com --pkggroup="IaSQL" --nodoc --deldesc=yes --delspec=yes --backup=no
+        echo "Infrastructure as SQL (IaSQL) CLI client" | sudo checkinstall --install=no -D --pkgname=iasql --pkgversion=${{env.VERSION}} --pkglicense=Proprietary --maintainer=hello@iasql.com --pkggroup="IaSQL" --nodoc --deldesc=yes --delspec=yes --backup=no
         cp ./iasql_${{ env.VERSION }}-1_amd64.deb /tmp/iasql_ubuntu_amd64.deb
 
     - name: Upload IaSQL Debian package
@@ -88,4 +88,4 @@ jobs:
         token: ${{ secrets.GH_PAT }}
         repository: iasql/docs
         event-type: release
-        client-payload: '{"version": "${{ env.VERSION }}"}'
+        client-payload: '{"version": "v${{ env.VERSION }}"}'
