@@ -22,3 +22,7 @@ jobs:
       # Run cargo fmt linting on the source code
       - name: Run style linter
         run: cargo fmt -- --check
+
+      # Run the build to make sure it also compiles
+      - name: Run build
+        run: cargo build
