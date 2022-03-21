@@ -7,7 +7,7 @@ edition = "2018"
 
 [dependencies]
 ascii_table = "3.0"
-clap = "2.33.1"
+clap = "3.1.6"
 dialoguer = "0.8.0"
 futures = "0.3.21"
 hyper = { version = "0.14", features = ["client", "http1", "http2", "runtime", "server"] }
