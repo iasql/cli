@@ -6,7 +6,7 @@ version = "0.2.11"
 edition = "2018"
 
 [dependencies]
-ascii_table = "3.0"
+ascii_table = "4.0"
 clap = "2.33.1"
 dialoguer = "0.8.0"
 futures = "0.3.21"
